@@ -18,3 +18,29 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Checks to see if the desired folder exists already or not, if not it creates teh folder
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+
+# Function to ensure that the current file that is being uploaded is within the allowed extensions
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+# Main entry point to the app takes you to index page
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
+# Ensure app is being run locally and define params
+# Host 0.0.0.0 allows the web server to be exposed to all devices on the local network
+# Port is used to establish connection to web server
+
+# WARNING: If port is occupied please specify a different one and try again
+if __name__ == '__main__':
+    app.run(
+        host = '0.0.0.0',
+        port = 5000,
+        debug = True
+    )
+
+    print("App started on port 5000")
