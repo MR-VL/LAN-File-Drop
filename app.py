@@ -1,5 +1,6 @@
 import os
 from flask import Flask, request, redirect, url_for, render_template, send_from_directory
+from werkzeug.utils import secure_filename
 
 # Declares the folder where files uploaded to the web server will be stored.
 # You can manually change this by including the full 'C' drive path to your preferred location
@@ -30,6 +31,19 @@ def allowed_file(filename):
 def index():
     return render_template('index.html')
 
+@app.route('/upload', methods= ['POST'])
+def upload_file():
+    if 'files[]' not in request.files:
+        return 'No file part', 400
+
+    files = request.files.getlist('files[]')
+
+    for file in files:
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+    return 'Files uploaded successfully!'
 
 # Ensure app is being run locally and define params
 # Host 0.0.0.0 allows the web server to be exposed to all devices on the local network
