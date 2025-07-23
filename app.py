@@ -31,18 +31,25 @@ def allowed_file(filename):
 def index():
     return render_template('index.html')
 
+
+# Upload route responsible for uploading files to server
 @app.route('/upload', methods= ['POST'])
 def upload_file():
+    # If there are no files uploaded return a error message
     if 'files[]' not in request.files:
         return 'No file part', 400
-
+    # Retrieves all the uploaded files from the frontend, is able to handle multiple files at once
     files = request.files.getlist('files[]')
 
+    # Loops through all the files uploaded
     for file in files:
+        # Ensures that the file uploaded is within the auto approved extensions
         if file and allowed_file(file.filename):
+            # Sanitize the filename to avoid directory traversal attacks and unsafe characters
             filename = secure_filename(file.filename)
+            # Save the file to the upload folder specified above
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
+    # Sends message to frontend that files have been successfully uploaded
     return 'Files uploaded successfully!'
 
 # Ensure app is being run locally and define params
@@ -56,5 +63,5 @@ if __name__ == '__main__':
         port = 5000,
         debug = True
     )
-
+    # Print that the app has successfully started
     print("App started on port 5000")
