@@ -37,16 +37,24 @@ def index():
 def upload_file():
     # If there are no files uploaded return a error message
     if 'files[]' not in request.files:
-        return 'No file part', 400
+        return {'status': 'error', 'message': 'No file part'}, 400
+
     # Retrieves all the uploaded files from the frontend, is able to handle multiple files at once
     files = request.files.getlist('files[]')
 
+    success_files = []
+    failed_files = []
+
     # Loops through all the files uploaded
     for file in files:
-        # Ensures that the file uploaded is within the auto approved extensions
-        if file and allowed_file(file.filename):
+        if file:
             # Sanitize the filename to avoid directory traversal attacks and unsafe characters
             filename = secure_filename(file.filename)
+
+            if not allowed_file(filename):
+                failed_files.append({'filename': filename, 'reason': 'File type not allowed'})
+                continue
+
             # Save the file to the upload folder specified above
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     # Sends message to frontend that files have been successfully uploaded
