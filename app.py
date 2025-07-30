@@ -55,10 +55,19 @@ def upload_file():
                 failed_files.append({'filename': filename, 'reason': 'File type not allowed'})
                 continue
 
-            # Save the file to the upload folder specified above
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    # Sends message to frontend that files have been successfully uploaded
-    return 'Files uploaded successfully!'
+            try:
+                # Save the file to the upload folder specified above
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                success_files.append(filename)
+
+            except Exception as e:
+                failed_files.append({'filename': filename, 'reason': str(e)})
+
+    return {
+        'status': 'ok',
+        'uploaded': success_files,
+        'failed': failed_files
+    }
 
 # Ensure app is being run locally and define params
 # Host 0.0.0.0 allows the web server to be exposed to all devices on the local network
