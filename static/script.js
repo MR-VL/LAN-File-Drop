@@ -15,10 +15,20 @@ document.getElementById('upload-form').addEventListener('submit', async function
     const status = document.getElementById('status');
 
     if (result.ok){
-        status.innerText = "Upload Completed";
-        input.value = '';
+        const data = await results.json();
+        let message = `Uploaded: ${data.uploaded.length} file(s).`;
+
+        if (data.failed.length > 0){
+            message += `\nFailed: ${data.failed.length} file(s).\n`;
+            data.failed.forEach(f => {
+                message += ` - ${f.filename}: ${f.reason}\n`;
+            });
+
+            status.innerText = message;
+            input.value = ``;
+        }
     }
     else{
-        status.innerText = "Upload Failed";
+        status.innerText = "[ERROR]: Upload Failed Entirely. Please see log and try again.";
     }
 })
