@@ -37,20 +37,37 @@ def index():
 def upload_file():
     # If there are no files uploaded return a error message
     if 'files[]' not in request.files:
-        return 'No file part', 400
+        return {'status': 'error', 'message': 'No file part'}, 400
+
     # Retrieves all the uploaded files from the frontend, is able to handle multiple files at once
     files = request.files.getlist('files[]')
 
+    success_files = []
+    failed_files = []
+
     # Loops through all the files uploaded
     for file in files:
-        # Ensures that the file uploaded is within the auto approved extensions
-        if file and allowed_file(file.filename):
+        if file:
             # Sanitize the filename to avoid directory traversal attacks and unsafe characters
             filename = secure_filename(file.filename)
-            # Save the file to the upload folder specified above
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-    # Sends message to frontend that files have been successfully uploaded
-    return 'Files uploaded successfully!'
+
+            if not allowed_file(filename):
+                failed_files.append({'filename': filename, 'reason': 'File type not allowed'})
+                continue
+
+            try:
+                # Save the file to the upload folder specified above
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                success_files.append(filename)
+
+            except Exception as e:
+                failed_files.append({'filename': filename, 'reason': str(e)})
+
+    return {
+        'status': 'ok',
+        'uploaded': success_files,
+        'failed': failed_files
+    }
 
 # Ensure app is being run locally and define params
 # Host 0.0.0.0 allows the web server to be exposed to all devices on the local network
@@ -58,10 +75,11 @@ def upload_file():
 
 # WARNING: If port is occupied please specify a different one and try again
 if __name__ == '__main__':
+    # Print that the app has successfully started
+    print("App started on port 5000")
+
     app.run(
         host = '0.0.0.0',
         port = 5000,
         debug = True
     )
-    # Print that the app has successfully started
-    print("App started on port 5000")
