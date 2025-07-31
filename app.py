@@ -40,7 +40,13 @@ def get_local_ip():
 # Main entry point to the app takes you to index page
 @app.route('/')
 def index():
-    return render_template('index.html')
+    local_ip = get_local_ip()
+    url = f"http://{local_ip}:5000"
+    qr = qrcode.make(url)
+    qr_path = os.path.join('static', 'qrcode.png')
+    os.makedirs('static', exist_ok=True)
+    qr.save(qr_path)
+    return render_template('index.html', qr_path=qr_path, local_url=url)
 
 
 # Upload route responsible for uploading files to server
