@@ -1,7 +1,8 @@
 import os
 from flask import Flask, request, redirect, url_for, render_template, send_from_directory
 from werkzeug.utils import secure_filename
-
+import netifaces as ni
+import qrcode
 # Declares the folder where files uploaded to the web server will be stored.
 # You can manually change this by including the full 'C' drive path to your preferred location
 UPLOAD_FOLDER = 'uploads'
@@ -25,11 +26,27 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def get_local_ip():
+    for iface in ni.interfaces():
+        addresses = ni.ifaddresses(iface)
+        if ni.AF_INET in addresses:
+            for address in addresses[ni.AF_INET]:
+                ip = address['addr']
+                if ip and not ip.startswith('127.'):
+                    return ip
+
+    return '127.0.0.1'
 
 # Main entry point to the app takes you to index page
 @app.route('/')
 def index():
-    return render_template('index.html')
+    local_ip = get_local_ip()
+    url = f"http://{local_ip}:5000"
+    qr = qrcode.make(url)
+    qr_path = os.path.join('static', 'qrcode.png')
+    os.makedirs('static', exist_ok=True)
+    qr.save(qr_path)
+    return render_template('index.html', qr_path=qr_path, local_url=url)
 
 
 # Upload route responsible for uploading files to server
