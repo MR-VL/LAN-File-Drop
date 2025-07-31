@@ -75,10 +75,11 @@ def upload_file():
 
 # WARNING: If port is occupied please specify a different one and try again
 if __name__ == '__main__':
+    # Print that the app has successfully started
+    print("App started on port 5000")
+
     app.run(
         host = '0.0.0.0',
         port = 5000,
         debug = True
     )
-    # Print that the app has successfully started
-    print("App started on port 5000")

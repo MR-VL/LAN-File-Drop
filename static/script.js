@@ -15,7 +15,7 @@ document.getElementById('upload-form').addEventListener('submit', async function
     const status = document.getElementById('status');
 
     if (result.ok){
-        const data = await results.json();
+        const data = await result.json();
         let message = `Uploaded: ${data.uploaded.length} file(s).`;
 
         if (data.failed.length > 0){
