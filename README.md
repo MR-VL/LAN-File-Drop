@@ -39,9 +39,14 @@ You’re on your iPhone and want to quickly send a bunch of videos or screenshot
 2. **Install dependencies**  
    `pip install -r requirements.txt`
 
-3. **Run the app**  
-   `python app.py`
+3. **Run the app with Gunicorn**  
+   `gunicorn -w 17 --threads 4 -b 0.0.0.0:5000 app:app`
 
+   - `-w 17` — Run 17 worker processes (recommended: 2 × cores + 1)  
+   - `--threads 4` — Each worker runs 4 threads (for better concurrency during uploads)  
+   - `-b 0.0.0.0:5000` — Bind to all interfaces so the app is accessible from other LAN devices  
+   - `app:app` — Target the Flask app instance named `app` inside `app.py`
+   - Workers and threads can be set higher or lower depending on computer specs and memory availability
 4. **Visit the app**  
    - On your **laptop**: `http://localhost:5000`  
    - On your **phone** (same Wi-Fi): `http://<your-laptop-local-ip>:5000`  
@@ -82,7 +87,7 @@ MIT License
 ## Tip
 
 Add an alias to make it easy to run:  
-`alias filedrop="python /path/to/lan-filedrop/app.py"`
+`alias filedrop="gunicorn -w 17 --threads 4 -b 0.0.0.0:5000 /path/to/lan-filedrop/app:app"`
 
 Now just type `filedrop` in your terminal to launch the app.
 
