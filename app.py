@@ -1,8 +1,9 @@
 import os
-from flask import Flask, request, redirect, url_for, render_template, send_from_directory
+from flask import Flask, request, redirect, url_for, render_template, send_from_directory, send_file
 from werkzeug.utils import secure_filename
 import netifaces as ni
 import qrcode
+import mimetypes
 # Declares the folder where files uploaded to the web server will be stored.
 # You can manually change this by including the full 'C' drive path to your preferred location
 UPLOAD_FOLDER = 'uploads'
@@ -85,6 +86,12 @@ def upload_file():
         'uploaded': success_files,
         'failed': failed_files
     }
+
+def list_files():
+    files = os.listdir(app.config['UPLOAD_FOLDER'])
+    files = [f for f in files if os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], f))]
+    return render_template('files.html', files=files)
+
 
 # Ensure app is being run locally and define params
 # Host 0.0.0.0 allows the web server to be exposed to all devices on the local network
