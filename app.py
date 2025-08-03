@@ -38,6 +38,10 @@ def get_local_ip():
 
     return '127.0.0.1'
 
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404.html'), 404
+
 # Main entry point to the app takes you to index page
 @app.route('/')
 def index():
