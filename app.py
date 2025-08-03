@@ -1,8 +1,9 @@
 import os
-from flask import Flask, request, redirect, url_for, render_template, send_from_directory
+from flask import Flask, request, redirect, url_for, render_template, send_from_directory, send_file
 from werkzeug.utils import secure_filename
 import netifaces as ni
 import qrcode
+import mimetypes
 # Declares the folder where files uploaded to the web server will be stored.
 # You can manually change this by including the full 'C' drive path to your preferred location
 UPLOAD_FOLDER = 'uploads'
@@ -36,6 +37,10 @@ def get_local_ip():
                     return ip
 
     return '127.0.0.1'
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404.html'), 404
 
 # Main entry point to the app takes you to index page
 @app.route('/')
@@ -85,6 +90,26 @@ def upload_file():
         'uploaded': success_files,
         'failed': failed_files
     }
+
+@app.route('/files')
+def list_files():
+    files = os.listdir(app.config['UPLOAD_FOLDER'])
+    files = [f for f in files if os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], f))]
+    return render_template('files.html', files=files)
+
+@app.route('/download/<filename>')
+def download_files(filename):
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    if os.path.exists(file_path):
+        return send_file(file_path, as_attachment=True)
+    return abort(404)
+
+@app.route('/view/<filename>')
+def view_file(filename):
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    if os.path.exists(file_path):
+        return send_file(file_path)
+    return abort(404)
 
 # Ensure app is being run locally and define params
 # Host 0.0.0.0 allows the web server to be exposed to all devices on the local network
