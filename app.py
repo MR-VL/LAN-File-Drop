@@ -87,10 +87,18 @@ def upload_file():
         'failed': failed_files
     }
 
+@app.route('/files')
 def list_files():
     files = os.listdir(app.config['UPLOAD_FOLDER'])
     files = [f for f in files if os.path.isfile(os.path.join(app.config['UPLOAD_FOLDER'], f))]
     return render_template('files.html', files=files)
+
+@app.route('/download/<filename>')
+def download_files(filename):
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    if os.path.exists(file_path):
+        return send_file(file_path, as_attachment=True)
+    return "File not found", 404
 
 
 # Ensure app is being run locally and define params
