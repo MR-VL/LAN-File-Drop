@@ -23,12 +23,17 @@ document.getElementById('upload-form').addEventListener('submit', async function
             data.failed.forEach(f => {
                 message += ` - ${f.filename}: ${f.reason}\n`;
             });
-
-            status.innerText = message;
-            input.value = ``;
         }
+
+        status.innerText = message;
+        input.value = '';
     }
     else{
         status.innerText = "[ERROR]: Upload Failed Entirely. Please see log and try again.";
     }
-})
+});
+
+document.getElementById('clear-selection').addEventListener('click', function(){
+    document.getElementById('file-input').value = '';
+    document.getElementById('status').innerText = 'Selection Cleared.';
+});
