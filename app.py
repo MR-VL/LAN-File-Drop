@@ -3,7 +3,9 @@ from flask import Flask, request, redirect, url_for, render_template, send_from_
 from werkzeug.utils import secure_filename
 import netifaces as ni
 import qrcode
+import socket
 import mimetypes
+
 # Declares the folder where files uploaded to the web server will be stored.
 # You can manually change this by including the full 'C' drive path to your preferred location
 UPLOAD_FOLDER = 'uploads'
@@ -11,7 +13,6 @@ UPLOAD_FOLDER = 'uploads'
 # Lists the allowed extensions you may add more as necessary, the ones below are tested and are confirmed to work as
 # intended, adding new extensions could potentially create problems during transfer
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov', 'pdf', 'txt', 'zip', 'rar', 'mp3', 'tar', 'wav', 'm4a'}
-
 
 # Creates a new Flask web application instance
 app = Flask(__name__)
@@ -22,6 +23,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Checks to see if the desired folder exists already or not, if not it creates teh folder
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+current_port = 5000
 
 # Function to ensure that the current file that is being uploaded is within the allowed extensions
 def allowed_file(filename):
@@ -37,6 +39,14 @@ def get_local_ip():
                     return ip
 
     return '127.0.0.1'
+
+def find_free_port(start_port=5000, host='127.0.0.1'):
+    port = start_port
+    while True:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            if s.connect_ex((host, port)) != 0:
+                return port
+            port += 1
 
 @app.errorhandler(404)
 def not_found(error):
