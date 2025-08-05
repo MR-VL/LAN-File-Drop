@@ -127,11 +127,18 @@ def view_file(filename):
 
 # WARNING: If port is occupied please specify a different one and try again
 if __name__ == '__main__':
+    global current_port
+    START_PORT = 5000
+    current_port = find_free_port(START_PORT)
+
+    if current_port != START_PORT:
+        print(f"Port {START_PORT} is already in use. Using port {current_port} instead.")
+
     # Print that the app has successfully started
     print("App started on port 5000")
 
     app.run(
         host = '0.0.0.0',
-        port = 5000,
+        port = current_port,
         debug = True
     )
