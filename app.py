@@ -127,7 +127,6 @@ def view_file(filename):
 
 # WARNING: If port is occupied please specify a different one and try again
 if __name__ == '__main__':
-    global current_port
     START_PORT = 5000
     current_port = find_free_port(START_PORT)
 
