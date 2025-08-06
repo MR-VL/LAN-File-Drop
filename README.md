@@ -36,10 +36,12 @@ You’re on your iPhone and want to quickly send a bunch of videos or screenshot
    `git clone https://github.com/yourusername/Lan-FileDrop.git`  
    `cd Lan-Filedrop`
 
-2. **Install dependencies**  
+   Please ensure that you have forked the repository to your account.
+
+3. **Install dependencies**  
    `pip install -r requirements.txt`
 
-3. **Run the app with Gunicorn**  
+4. **Run the app with Gunicorn**  
    `gunicorn -w 17 --threads 4 -b 0.0.0.0:5000 app:app`
 
    - `-w 17` — Run 17 worker processes (recommended: 2 × cores + 1)  
@@ -47,7 +49,7 @@ You’re on your iPhone and want to quickly send a bunch of videos or screenshot
    - `-b 0.0.0.0:5000` — Bind to all interfaces so the app is accessible from other LAN devices  
    - `app:app` — Target the Flask app instance named `app` inside `app.py`
    - Workers and threads can be set higher or lower depending on computer specs and memory availability
-4. **Visit the app**  
+5. **Visit the app**  
    - On your **laptop**: `http://localhost:5000`  
    - On your **phone** (same Wi-Fi): `http://<your-laptop-local-ip>:5000`  
      e.g. `http://192.168.0.101:5000`
