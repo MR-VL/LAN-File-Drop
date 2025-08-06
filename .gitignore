@@ -1,2 +1,3 @@
 .idea
 /static/qrcode.png
+config.env
