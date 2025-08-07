@@ -1,4 +1,4 @@
-/Legacy-Python-Flask-Backend/.idea/
+/.idea/
 /Legacy-Python-Flask-Backend/__pycache__/
 /Legacy-Python-Flask-Backend/config.env
 /Legacy-Python-Flask-Backend/static/qrcode.png
