@@ -1,3 +1,0 @@
-This is an example file that can be used to demonstrate teh upload folder functionality.
-
-You may delete this file as it is simply for demonstration purposes only.
