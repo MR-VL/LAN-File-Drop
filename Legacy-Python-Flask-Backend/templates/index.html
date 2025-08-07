@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+     <link rel="stylesheet" href="/static/styles.css">
+    <title>FileDrop</title>
+</head>
+<body>
+
+    <div class = "container">
+        <h1>LAN FileDrop</h1>
+        <p>Scan this QR code on your phone to access the app:</p>
+        <img src="{{ qr_path }}" alt="QR Code" style="max-width: 250px; margin: 10px;">
+
+        <p>Or open this link on your phone:</p>
+        <code>{{ local_url }}</code>
+
+        <hr>
+
+        <form id="upload-form" enctype="multipart/form-data">
+            <input type="file" name="files[]" multiple id="file-input"/>
+            <button type="submit">Upload</button>
+            <button type="button" id="clear-selection">Clear Selection</button>
+        </form>
+
+        <div id="status" style="white-space: pre-line; margin-top: 1em;"></div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
