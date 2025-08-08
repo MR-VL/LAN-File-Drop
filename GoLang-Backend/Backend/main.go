@@ -1,5 +1,11 @@
 package main
 
+const (
+	uploadFolder = "./FileDrop"
+	staticFolder = "./static"
+	startPort    = 5000
+)
+
 var allowedExtensions = map[string]bool{
 	".7z":   true,
 	".gif":  true,
