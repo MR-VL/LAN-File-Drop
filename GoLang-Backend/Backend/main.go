@@ -1,5 +1,10 @@
 package main
 
+import (
+	"path/filepath"
+	"strings"
+)
+
 const (
 	uploadFolder = "./FileDrop"
 	staticFolder = "./static"
@@ -23,6 +28,11 @@ var allowedExtensions = map[string]bool{
 	".txt":  true,
 	".wav":  true,
 	".zip":  true,
+}
+
+func allowedFile(filename string) bool {
+	extension := strings.ToLower(filepath.Ext(filename))
+	return allowedExtensions[extension]
 }
 
 func main() {
