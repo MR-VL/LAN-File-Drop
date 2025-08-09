@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+	"os"
 	"path/filepath"
 	"strings"
 )
@@ -36,5 +38,7 @@ func allowedFile(filename string) bool {
 }
 
 func main() {
-
+	if err := os.MkdirAll(uploadFolder, 0755); err != nil {
+		log.Fatalf("Upload Folder does not exist and connot be created: %v", err)
+	}
 }
