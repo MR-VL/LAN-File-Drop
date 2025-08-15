@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"net"
 	"os"
 	"path/filepath"
 	"strings"
@@ -35,6 +37,18 @@ var allowedExtensions = map[string]bool{
 func allowedFile(filename string) bool {
 	extension := strings.ToLower(filepath.Ext(filename))
 	return allowedExtensions[extension]
+}
+
+func findFreePort(start int) int {
+	for port := start; port < start+1000; port++ {
+		addr := fmt.Sprintf(":%d", port)
+		listner, err := net.Listen("tcp", addr)
+		if err == nil {
+			listner.Close()
+			return port
+		}
+	}
+	return start
 }
 
 func main() {
